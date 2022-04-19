@@ -2,6 +2,8 @@ package com.abdelwahab.cryptography;
 
 public class Main {
     public static void main(String[] args) {
-        System.out.println("hello world !");
+        Caesar caesar=new Caesar();
+        System.out.println(caesar.encrypt("HelloWorld",5,true));
+        System.out.println(caesar.decrypt("mjqqtbtwqi",5,false));
     }
 }
