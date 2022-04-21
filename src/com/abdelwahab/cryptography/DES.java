@@ -2,7 +2,8 @@ package com.abdelwahab.cryptography;
 
 public class DES {
 
-    // Initial Permutation Table
+    // First Permutation Table for the 64 Key
+    // Matrix to make a 64bit key to 56bit key
     private int[] firstPermutationMatrix = {
             57, 49, 41, 33, 25, 17, 9,
             1, 58, 50, 42, 34, 26, 18,
@@ -12,6 +13,8 @@ public class DES {
             7, 62, 54, 46, 38, 30, 22,
             14, 6, 61, 53, 45, 37, 29,
             21, 13, 5, 28, 20, 12, 4};
+    // Second Permutation table for the 56 keys
+    // Matrix to make 56bit key to 48bit key
     private int[] secondPermutationMatrix={
             14,17,11,24,1,5,
             3,28,15,6,21,10,
@@ -22,12 +25,17 @@ public class DES {
             44,49,39,56,34,53,
             46,42,50,36,29,32 };
     private String[] key56List=new String[16];
+    private String[] key48List=new String[16];
 
     private void generateKeys(String key) {
         if (key.length() < 64) {
             System.out.println("something is wrong ,key length is less then 64 , it is :" + key.length());
             return;
         }
+        this.generate56Keys(key);
+        this.generate48Keys();
+    }
+    private void generate56Keys(String key){
         String key56 = "";
         for (int i = 0; i < this.firstPermutationMatrix.length; i++) {
             key56 += key.charAt(this.firstPermutationMatrix[i] - 1);
@@ -44,14 +52,19 @@ public class DES {
             this.key56List[i]=newKey;
             key56=newKey;
         }
-        System.out.println(this.key56List.length);
-        for (int i = 0; i < 16; i++) {
-            System.out.println(this.key56List[i]);
+    }
+
+    private void generate48Keys(){
+        for (int i = 0; i < this.key56List.length; i++) {
+            this.key48List[i]=this.generate48Key(this.key56List[i]);
         }
     }
-    private void generate48Keys(){
-
-
+    private String generate48Key(String key){
+        String generatedKey="";
+        for (int i = 0; i < this.secondPermutationMatrix.length; i++) {
+            generatedKey+=key.charAt(this.secondPermutationMatrix[i]-1);
+        }
+        return generatedKey;
     }
     private String shiftLeft(String key, int amount) {
         String shiftedKey = key.substring(amount);
