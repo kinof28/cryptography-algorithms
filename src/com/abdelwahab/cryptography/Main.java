@@ -13,8 +13,12 @@ public class Main {
 //        System.out.println(vigenere.encrypt("decodex","isi",false));
 //        System.out.println(vigenere.decrypt("lwkwvmf","isi",false));
         //test for LFSR Algorithm
-        LFSR lfsr=new LFSR();
-        System.out.println("encryption : "+lfsr.encrypt("decodex","01010101"));
-        System.out.println("message in binary : "+lfsr.decrypt("00110001101011010011001101110101000101001001100001101110","01010101"));
+//        LFSR lfsr=new LFSR();
+//        System.out.println("encryption : "+lfsr.encrypt("decodex","01010101"));
+//        System.out.println("message in binary : "+lfsr.decrypt("00110001101011010011001101110101000101001001100001101110","01010101"));
+        //test for DES Algorithm
+        DES des = new DES();
+        des.encrypt("bbbb","011000111111111010101010101010101010101010101010101010101010101010101");
+
     }
 }
