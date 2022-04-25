@@ -1,7 +1,10 @@
 package com.abdelwahab.cryptography;
 
 public class Caesar {
+    //array of alphabets to use for alphabetic encryption
     private char[] alphabet;
+    // initialisation in constructor
+    // initialisation of alphabets array
     public Caesar(){
         this.alphabet=new char[26];
         int j=0;
@@ -10,6 +13,7 @@ public class Caesar {
             j++;
         }
     }
+    //encryption public methode
     public String encrypt(String message,int key,boolean numericOrAlphabetic){
         //boolean value is true for numeric and false for alphabetic
         if(numericOrAlphabetic)return this.encryptNumeric(message,key);
