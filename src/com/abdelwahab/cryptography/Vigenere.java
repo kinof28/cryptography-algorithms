@@ -78,20 +78,30 @@ public class Vigenere {
         // return -1 for non alphabetic character
         return -1;
     }
-
+    // encryption implementation in numeric method
     private String encryptNumeric(String message,String key){
         String encryptedMessage="";
+        // converting message to lower case to make sure that ASCII code is between 97(a) and 123(z)
         message=message.toLowerCase();
+        // declaring new intiger helpers
         int helper1,helper2;
         for (int i = 0; i < message.length(); i++) {
+            // for each iteration we asign ascii code of the letter from the message and we ommit 97 
+            // to ensure that helper1 has value from 0 to 25 for characters from a to z
             helper1=message.charAt(i)-97;
+            // helper2 has value from 0 to 25 for character from a to z but of the character from the key
             helper2=key.charAt(i%key.length())-97;
+            // we add helper1 and helper2 to get the encrypted character and to make sure it stay from 0 to 25 we make mod operation 
             helper1=(helper1+helper2)%26;
+            // we convert back 0 to 25 to real ascii code by ading 97 that we take it earlier and convert it to character
+            // and add it to the encrypted message
             encryptedMessage+=Character.toString(helper1+97);
         }
+        // return encrypted message
         return encryptedMessage;
     }
-
+    // decryption implementation in numeric method
+    // the most part is the same as encryption function with some diffrences we comment them out
     private String decryptNumeric(String message,String key){
         String decryptedMessage="";
         message=message.toLowerCase();
@@ -100,13 +110,11 @@ public class Vigenere {
             helper1=message.charAt(i)-97;
             helper2=key.charAt(i%key.length())-97;
             helper1=(helper1-helper2);
+            // the only diffrence is that helper1 may be negative so we take it out from z not from a 
+            // we make this ternary condition so if it's positive we add 97 ('a' code) and if it's negative we add 123 ('z' code) 
             helper1=helper1<0?123+helper1:helper1+97;
             decryptedMessage+=Character.toString(helper1);
         }
         return decryptedMessage;
     }
-
-
-
-
 }
