@@ -69,7 +69,4 @@ public class Caesar {
     private String decryptNumeric(String message,int key){
         return this.encryptNumeric(message,-key);
     }
-
-
-
 }
