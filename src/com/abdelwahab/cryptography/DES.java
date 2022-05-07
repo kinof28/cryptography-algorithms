@@ -37,23 +37,25 @@ public class DES {
     // takes the initial key and initialise our list of keys
     // note that the key in argument must have length of 64 or higher
     private void generateKeys(String key) {
-        // first we check the key length if it's less than 64 we print and error message and return
+        // first we check the key's length if it's less than 64 we print and error message and return
         if (key.length() < 64) {
             System.out.println("something is wrong ,key length is less then 64 , it is :" + key.length());
             return;
         }
-        // when the key length is ok we create the 16 keys where key length =56
+        // when the key's length is ok we create the 16 keys where key.length =56
         this.generate56Keys(key);
         // we use the previous 56 bit key list to generate our final 48 bit keys
         this.generate48Keys();
     }
+
     // the function that creates 16 key that have 56 bit in length
     private void generate56Keys(String key) {
         // we create a new key that have 56 bit in length by passing the initial key in the first permutation matrix
         // we initialise it by an empty string
         String key56 = "";
         for (int i = 0; i < this.firstPermutationMatrix.length; i++) {
-            // add characters in the permutation matrix order
+            // add characters in the first permutation matrix order
+            // -1 cause indexes in the matrix goes from 1 to 64
             key56 += key.charAt(this.firstPermutationMatrix[i] - 1);
         }
         // after generation of the first key we split it into two part
@@ -80,46 +82,76 @@ public class DES {
         }
     }
 
+    // function that creates the final list of 256 key of 48 bits
     private void generate48Keys() {
+        // we go throw the 56bit keys and reduce them to be 48 bits keys using a helper function
+        // that takes a 56bits key as entry and returns 48 bits key
         for (int i = 0; i < this.key56List.length; i++) {
+            // we fill them in the initial list of 16 key
             this.key48List[i] = this.generate48Key(this.key56List[i]);
         }
+        // creation of variables where key48A takes the left part and key48B takes the right part
         String key48A, key48B, newKey;
         int amount = 2;
         for (int i = 0; i < this.key48List.length; i++) {
+            // we go throw the list of 16 48 bits keys and for each we perform a 16 shift and save each new key
             for (int j = 0; j < 16; j++) {
+                // for each key we take the left and right parts by devising it into 2 parts
                 key48A = this.key48List[i].substring(0, this.key48List[i].length() / 2);
                 key48B = this.key48List[i].substring(this.key48List[i].length() / 2);
+                // same as previous amount equals 1 in those rounds
                 if (j == 0 || j == 1 || j == 8 || j == 15) amount = 1;
+                // the use of the same helper function of shifting
                 newKey = this.shiftLeft(key48A, amount);
                 newKey += this.shiftLeft(key48B, amount);
+                // we save the new key in the last list of keys that goes from 0 to 256
+                // i goes from 0 to 15 and j from 0 to 15 so to go from 0 to 255 we do (i*16)+j
                 this.key48ListFinal[(i * 16) + j] = newKey;
+                // we replace our initial 48bit key with the new key, so we can continue our shifting
                 this.key48List[i] = newKey;
             }
         }
     }
 
+    // function takes 56bit key and returns 48bit key
     private String generate48Key(String key) {
+        // we create a new key of 48 bit in length by passing the key in the second permutation matrix
+        // we initialise it by an empty string
         String generatedKey = "";
         for (int i = 0; i < this.secondPermutationMatrix.length; i++) {
+            // add characters in the second permutation matrix order
+            // -1 cause indexes in the matrix goes from 1 to 56
             generatedKey += key.charAt(this.secondPermutationMatrix[i] - 1);
         }
+        // return the generated key
         return generatedKey;
     }
 
+    // helper function that shift a key with an amount
+    // takes as obvious the key to be shifted and the amount of shifting
     private String shiftLeft(String key, int amount) {
+        // start by omitting first characters . ex: 100000 , amount =1 we omit the 1
+        // and save it in the new key called shiftedKey
         String shiftedKey = key.substring(amount);
+        // append the omitted leading characters to the end
         shiftedKey = shiftedKey + key.substring(0, amount);
+        // return the new shiftedKey
         return shiftedKey;
     }
 
+    // the public encryption function takes the message and the key of 64 bits as entry and keyNumber(ex keyNumber = 100)
     public String encrypt(String message, String key, int keyNumber) {
+        // initialise the encryption by empty String
         String encryptedMessage = "";
+        // generate Keys
         this.generateKeys(key);
+        // convert the message to binary
         String messageInBinary = this.getMessageInBinary(message);
+        // go throw the binary message and perform Xor with the selected key
         for (int i = 0; i < messageInBinary.length(); i++) {
             encryptedMessage = messageInBinary.charAt(i) == this.key48ListFinal[keyNumber].charAt(i % 48) ? encryptedMessage + 0 : encryptedMessage + 1;
         }
+        // return the encrypted Key
         return encryptedMessage;
     }
 
@@ -148,14 +180,18 @@ public class DES {
         return result;
     }
 
+    // public decryption function similar to encryption function but takes message in binary
     public String decrypt(String message, String key, int keyNumber) {
         String decryptedMessage = "";
+        // check if the list of keys is empty we initialise them else we just use the already initialised lise
         if (this.key48ListFinal[0] == null) {
             this.generateKeys(key);
         }
+        // go throw message which is in binary already and perform a Xor with the selected key
         for (int i = 0; i < message.length(); i++) {
             decryptedMessage = message.charAt(i) == this.key48ListFinal[keyNumber].charAt(i % 48) ? decryptedMessage + 0 : decryptedMessage + 1;
         }
+        // return decryption in binary
         return decryptedMessage;
     }
 
