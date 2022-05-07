@@ -18,7 +18,7 @@ public class Main {
 //        System.out.println("message in binary : "+lfsr.decrypt("00110001101011010011001101110101000101001001100001101110","01010101"));
         //test for DES Algorithm
         DES des = new DES();
-        des.encrypt("bbbb","011000111111111010101010101010101010101010101010101010101010101010101");
-
+        System.out.println(des.encrypt("XOXO","011000111111111010101010101010101010101010101010101010101010101010101",120));
+        System.out.println("00101101101110100011100101000001".length());
     }
 }
